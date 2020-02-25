@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity >= 0.5.0;
 
 import "./ZombieFeeding.sol";
 
@@ -10,6 +10,8 @@ contract ZombieHelper is ZombieFeeding {
     require(zombies[_zombieId].level >= _level);
     _;
   }
+
+  event NewLevel(uint _zombieId, uint _level);
 
   function withdraw() external onlyOwner {
     address payable _owner = address(uint160((owner())));
@@ -23,6 +25,7 @@ contract ZombieHelper is ZombieFeeding {
   function levelUp(uint _zombieId) external payable {
     require(msg.value == levelUpFee);
     zombies[_zombieId].level = zombies[_zombieId].level.add(1);
+    emit NewLevel(_zombieId, zombies[_zombieId].level);
   }
 
   function changeName(uint _zombieId, string calldata _newName) external aboveLevel(2, _zombieId) onlyOwnerOf(_zombieId) {
